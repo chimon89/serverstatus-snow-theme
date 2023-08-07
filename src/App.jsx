@@ -54,7 +54,7 @@ function App () {
                 {item.online4 && item.online6 && '双栈'}
                 {item.online4 && !item.online6 && 'IPv4'}
                 {!item.online4 && item.online6 && 'IPv6'}
-                {!item.online4 && !item.online6 && '离线'}
+                {!item.online4 && !item.online6 && <span className='text-error'>离线</span>}
               </td>
               <td>{formatBytes(item.last_network_in)} | {formatBytes(item.last_network_out)}</td>
               <td className="flex items-center gap-1">{areaList.indexOf(item.location) > 0 && <img src={`/img/clients/${item.location}.png`} style={{height: "1rem"}}></img> } {item.name}</td>
@@ -65,19 +65,27 @@ function App () {
               <td>{formatBytes(item.network_in, 1)} | {formatBytes(item.network_out, 1)}</td>
               <td>
                 {
-                  item.cpu >= 90 ? <progress className="progress progress-error" value={item.cpu} max="100"></progress>
+                  item.cpu == null ? ''
+                    : item.cpu >= 90 ? <progress className="progress progress-error" value={item.cpu} max="100"></progress>
                     : (item.cpu >= 75 ? <progress className="progress progress-warning" value={item.cpu} max="100"></progress>
                       : <progress className="progress progress-success" value={item.cpu} max="100"></progress>)
                 }
               </td>
               <td>
-                <progress className="progress" value={item.memory_used} max={item.memory_total}></progress>
+                {
+                  item.memory_used == null ? ''
+                    : <progress className="progress" value={item.memory_used} max={item.memory_total}></progress>
+                }
               </td>
               <td>
-                <progress className="progress" value={item.hdd_used} max={item.hdd_total}></progress>
+                {
+                  item.hdd_used == null ? ''
+                    : <progress className="progress" value={item.hdd_used} max={item.hdd_total}></progress>
+                }
               </td>
               <td>
-                {(item.ping_10010 > 20 || item.ping_189 > 20 || item.ping_10086 > 20) ? <div className="badge badge-error">{item.ping_10010}%💻{item.ping_189}%💻{item.ping_10086}%</div>
+                { (item.ping_10010 == null || item.ping_189 == null || item.ping_10086 == null) ? '离线'
+                  : (item.ping_10010 > 20 || item.ping_189 > 20 || item.ping_10086 > 20) ? <div className="badge badge-error">{item.ping_10010}%💻{item.ping_189}%💻{item.ping_10086}%</div>
                   : (item.ping_10010 > 10 || item.ping_189 > 10 || item.ping_10086 > 10) ? <div className="badge badge-warning">{item.ping_10010}%💻{item.ping_189}%💻{item.ping_10086}%</div>
                   : <div className="badge badge-success">{item.ping_10010}%💻{item.ping_189}%💻{item.ping_10086}%</div>
                 }
@@ -88,11 +96,15 @@ function App () {
             }>
               <td colSpan="16">
                 <div className="text-center">
-                  <div>内存/虚存：{formatBytes(item.memory_used*1024,1)} / {formatBytes(item.memory_total*1024,1)} | {formatBytes(item.swap_used*1024,1)} / {formatBytes(item.swap_total*1024,1)}</div>
-                  <div>硬盘读写：{formatBytes(item.hdd_used)} / {formatBytes(item.hdd_total)} | {formatBytes(item.io_read,1)} / {formatBytes(item.io_write,1)}</div>
-                  <div>TCP/UDP/进/线：{item.tcp_count} / {item.udp_count} / {item.process_count} / {item.thread_count}</div>
-                  <div>联通/电信/移动：{item.time_10010}ms / {item.time_189}ms / {item.time_10086}ms</div>
-                  <div>丢包：联通/电信/移动：{item.ping_10010}% / {item.ping_189}% / {item.ping_10086}%</div>
+                  {
+                    (item.online4 && item.online6) ? <>
+                      <div>内存/虚存：{formatBytes(item.memory_used*1024,1)} / {formatBytes(item.memory_total*1024,1)} | {formatBytes(item.swap_used*1024,1)} / {formatBytes(item.swap_total*1024,1)}</div>
+                      <div>硬盘读写：{formatBytes(item.hdd_used)} / {formatBytes(item.hdd_total)} | {formatBytes(item.io_read,1)} / {formatBytes(item.io_write,1)}</div>
+                      <div>TCP/UDP/进/线：{item.tcp_count} / {item.udp_count} / {item.process_count} / {item.thread_count}</div>
+                      <div>联通/电信/移动：{item.time_10010}ms / {item.time_189}ms / {item.time_10086}ms</div>
+                      <div>丢包：联通/电信/移动：{item.ping_10010}% / {item.ping_189}% / {item.ping_10086}%</div>
+                    </> : '离线'
+                  }
                 </div>
               </td>
             </tr>
