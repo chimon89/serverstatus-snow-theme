@@ -97,13 +97,13 @@ function App () {
               <td colSpan="16">
                 <div className="text-center">
                   {
-                    (item.online4 && item.online6) ? <>
+                    (!item.online4 && !item.online6) ? '离线' : <>
                       <div>内存/虚存：{formatBytes(item.memory_used*1024,1)} / {formatBytes(item.memory_total*1024,1)} | {formatBytes(item.swap_used*1024,1)} / {formatBytes(item.swap_total*1024,1)}</div>
                       <div>硬盘读写：{formatBytes(item.hdd_used)} / {formatBytes(item.hdd_total)} | {formatBytes(item.io_read,1)} / {formatBytes(item.io_write,1)}</div>
                       <div>TCP/UDP/进/线：{item.tcp_count} / {item.udp_count} / {item.process_count} / {item.thread_count}</div>
                       <div>联通/电信/移动：{item.time_10010}ms / {item.time_189}ms / {item.time_10086}ms</div>
                       <div>丢包：联通/电信/移动：{item.ping_10010}% / {item.ping_189}% / {item.ping_10086}%</div>
-                    </> : '离线'
+                    </>
                   }
                 </div>
               </td>
